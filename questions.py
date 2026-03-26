@@ -7,8 +7,6 @@ categorias = {
 }
 
 
-guessed = []
-attempts = 6
 puntaje = 0
 
 print("¡Bienvenido al Ahorcado!")
@@ -26,48 +24,61 @@ else:
     print("Categoría no válida. Se usará 'programacion'")
     words = categorias["programacion"]
 
-word = random.choice(words)
+mezcla_palabras = random.sample(words, len(words))
 
 
-while attempts > 0:
-    # Mostrar progreso : letras adivinadas y guiones para las que faltan
-    progress = ""
-    for letter in word:
-        if letter in guessed:
-            progress += letter + " "
+for word in mezcla_palabras:
+    guessed = []
+    attempts = 6
+
+    print("Nueva palabra: ")
+        
+    while attempts > 0:
+        # Mostrar progreso : letras adivinadas y guiones para las que faltan
+        progress = ""
+        for letter in word:
+            if letter in guessed:
+                progress += letter + " "
+            else:
+                progress += "_ "
+        print(progress)
+
+        # Verificar si el jugador ya adivinó la palabra completa
+        if "_" not in progress:
+            puntaje += 6
+            print("¡Ganaste!")
+            print(f"Puntaje final: {puntaje}")
+            break
+
+        print(f"Intentos restantes: {attempts}")
+        print(f"Letras usadas: {', '.join(guessed)}")
+
+        letter = input("Ingresá una letra: ").lower()
+
+        if len(letter) == 1 and 'a' <= letter <= 'z':
+            if letter in guessed:
+                print(f"Ya usaste la letra {letter}. Intenta con otra")
+            elif letter in word:
+                guessed.append(letter)
+                print("¡Bien! Esa letra está en la palabra.")
+            else:
+                guessed.append(letter)
+                attempts -= 1
+                puntaje -= 1
+                print("Esa letra no está en la palabra.")
         else:
-            progress += "_ "
-    print(progress)
+            print("Entrada no válida. Ingresa solo una letra (a-z).")
 
-    # Verificar si el jugador ya adivinó la palabra completa
-    if "_" not in progress:
-        puntaje += 6
-        print("¡Ganaste!")
-        print(f"Puntaje final: {puntaje}")
-        break
+        print()
 
-    print(f"Intentos restantes: {attempts}")
-    print(f"Letras usadas: {', '.join(guessed)}")
-
-    letter = input("Ingresá una letra: ").lower()
-
-    if len(letter) == 1 and 'a' <= letter <= 'z':
-        if letter in guessed:
-            print(f"Ya usaste la letra {letter}. Intenta con otra")
-        elif letter in word:
-            guessed.append(letter)
-            print("¡Bien! Esa letra está en la palabra.")
-        else:
-            guessed.append(letter)
-            attempts -= 1
-            puntaje -= 1
-            print("Esa letra no está en la palabra.")
     else:
-        print("Entrada no válida. Ingresa solo una letra (a-z).")
+        puntaje = 0
+        print(f"¡Perdiste! La palabra era: {word}")
+        print(f"Puntaje final: {puntaje}")
 
-    print()
-
+    continuar = input("¿Querés jugar de nuevo? (si/no):").lower()
+    if continuar != "si":
+        break
 else:
-    puntaje = 0
-    print(f"¡Perdiste! La palabra era: {word}")
-    print(f"Puntaje final: {puntaje}")
+    print("Perfecto, adivinaste todas las palabras de la categoria!")
+print("Fin del juego")
